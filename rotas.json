@@ -1,0 +1,230 @@
+{
+	"info": {
+		"_postman_id": "76a85c39-fdad-4b16-b2ba-521e89412bfa",
+		"name": "Pokemon Api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "File Update",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "Pokemon Go.xlsx"
+						},
+						{
+							"key": "flag",
+							"value": "POKEMON",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/files/upload",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"files",
+						"upload"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List Pokemons",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Type-List",
+						"value": "LIST",
+						"description": "Header para tipo de Listagem PAGINATION OU LIST",
+						"type": "text"
+					},
+					{
+						"key": "Paginatation-Skip",
+						"value": "0",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "Paginatation-Take",
+						"value": "2",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/pokemons/search?name=Pikachua",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"pokemons",
+						"search"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "Pikachua",
+							"description": "Filtro de nome do pokemon"
+						},
+						{
+							"key": "is_shiny",
+							"value": "1",
+							"description": "Filtro de pokemon shiny",
+							"disabled": true
+						},
+						{
+							"key": "is_legendary",
+							"value": "1",
+							"description": "Filtro de pokemon shiny",
+							"disabled": true
+						},
+						{
+							"key": "type",
+							"value": "5",
+							"description": "Filtro de tipo",
+							"disabled": true
+						},
+						{
+							"key": "sub_type",
+							"value": null,
+							"description": "Filtro de SubTipo",
+							"disabled": true
+						},
+						{
+							"key": "weather",
+							"value": null,
+							"description": "Filtro de Clima",
+							"disabled": true
+						},
+						{
+							"key": "sub_weather",
+							"value": null,
+							"description": "Filtro de SubClima",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List Weather",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Type-List",
+						"value": "LIST",
+						"type": "text",
+						"description": "Header para tipo de Listagem PAGINATION OU LIST"
+					},
+					{
+						"key": "Paginatation-Skip",
+						"value": "0",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "Paginatation-Take",
+						"value": "2",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/pokemon_weather/search?list_pokemons=1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"pokemon_weather",
+						"search"
+					],
+					"query": [
+						{
+							"key": "weather",
+							"value": "",
+							"description": "Filtro de nome do Clima",
+							"disabled": true
+						},
+						{
+							"key": "list_pokemons",
+							"value": "1",
+							"description": "Filtro para listar os tipos e seus pokemons"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List Type",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Type-List",
+						"value": "LIST",
+						"type": "text",
+						"description": "Header para tipo de Listagem PAGINATION OU LIST"
+					},
+					{
+						"key": "Paginatation-Skip",
+						"value": "0",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "Paginatation-Take",
+						"value": "2",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/pokemon_types/search?list_pokemons=1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"pokemon_types",
+						"search"
+					],
+					"query": [
+						{
+							"key": "type",
+							"value": "Sunny/clear",
+							"description": "Filtro de nome do tipo",
+							"disabled": true
+						},
+						{
+							"key": "list_pokemons",
+							"value": "1",
+							"description": "Filtro para listar os tipos e seus pokemons"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
