@@ -3,12 +3,15 @@ import {
   Column,
   Entity,
   JoinColumn,
+  ManyToOne,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { CombatPoints } from './pokemon-cp.entity';
 import { PokemonStats } from './pokemon-stats.entity';
+import { PokemonTypes } from './pokemon-type.entity';
+import { PokemonWeather } from './pokemon-weather.entity';
 
 @Entity('pokemons')
 export class Pokemon {
@@ -83,4 +86,20 @@ export class Pokemon {
   @OneToOne(() => CombatPoints)
   @JoinColumn()
   cp_min: CombatPoints;
+
+  @ManyToOne(() => PokemonWeather)
+  @JoinColumn()
+  weather: PokemonWeather;
+
+  @ManyToOne(() => PokemonWeather)
+  @JoinColumn()
+  sub_weather: PokemonWeather;
+
+  @ManyToOne(() => PokemonTypes)
+  @JoinColumn()
+  type: PokemonTypes;
+
+  @ManyToOne(() => PokemonTypes)
+  @JoinColumn()
+  sub_type: PokemonTypes;
 }

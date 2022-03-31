@@ -10,8 +10,15 @@ import { SavePokemonStatsDto } from '../../dtos/pokemon-dtos/save-pokemon-stats.
 import { SavePokemonCpDto } from '../../dtos/pokemon-dtos/save-pokemon-cp.dto';
 import { CreatePokemonDto } from '../../dtos/pokemon-dtos/create-pokemon.dto';
 import { PokemonCpRepository } from '../../repositories/pokemon.repositories/pokemon-cp.repository';
-import { IError } from '../../interfaces/error.interface';
-import { GetPokemon } from 'src/dtos/pokemon-dtos/get-pokemon.dto';
+import { GetPokemon } from '../../dtos/pokemon-dtos/get-pokemon.dto';
+import { SavePokemonTypeDto } from '../../dtos/pokemon-dtos/save-pokemon-type.dto';
+
+import { PokemonTypeService } from './pokemon-type.service';
+import { PokemonWeatherService } from './pokemon-weather.service';
+import { SavePokemonWeatherDto } from 'src/dtos/pokemon-dtos/save-pokemon-weather.dto';
+
+const pokemonTypeService = new PokemonTypeService();
+const pokemonWeatherService = new PokemonWeatherService();
 
 export class PokemonsService {
   async createPokemons(
@@ -19,6 +26,10 @@ export class PokemonsService {
     savedPokemonStats: SavePokemonStatsDto,
     savePokemonCpMax: SavePokemonCpDto,
     savePokemonCpMin: SavePokemonCpDto,
+    savePokemonType: SavePokemonTypeDto,
+    savePokemonWeather: SavePokemonWeatherDto,
+    savePokemonSubType: SavePokemonTypeDto | null,
+    savePokemonSubWeather: SavePokemonWeatherDto | null,
   ): Promise<Pokemon | Error> {
     const { name } = createPokemonDto;
 
@@ -27,14 +38,33 @@ export class PokemonsService {
     }
 
     const stats = await PokemonStatsRepository.save(savedPokemonStats);
+
     const combatPointMax = await PokemonCpRepository.save(savePokemonCpMax);
     const combatPointMin = await PokemonCpRepository.save(savePokemonCpMin);
+
+    const pokemonType = await pokemonTypeService.createType(savePokemonType);
+    const pokemonSubType =
+      savePokemonSubType !== null
+        ? await pokemonTypeService.createType(savePokemonSubType)
+        : null;
+
+    const pokemonWeather = await pokemonWeatherService.createWeather(
+      savePokemonWeather,
+    );
+    const pokemonSubWeather =
+      savePokemonSubWeather !== null
+        ? await pokemonWeatherService.createWeather(savePokemonSubWeather)
+        : null;
 
     return await PokemonRepository.save({
       ...createPokemonDto,
       stats,
       cp_max: combatPointMax,
       cp_min: combatPointMin,
+      type: pokemonType,
+      sub_type: pokemonSubType,
+      weather: pokemonWeather,
+      sub_weather: pokemonSubWeather,
     });
   }
 

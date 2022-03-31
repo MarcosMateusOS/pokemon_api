@@ -2,6 +2,8 @@ import { PokemonsService } from '../pokemon/pokemons.service';
 import { CreatePokemonDto } from '../../dtos/pokemon-dtos/create-pokemon.dto';
 import { SavePokemonStatsDto } from '../../dtos/pokemon-dtos/save-pokemon-stats.dto';
 import { SavePokemonCpDto } from '../../dtos/pokemon-dtos/save-pokemon-cp.dto';
+import { SavePokemonTypeDto } from '../../dtos/pokemon-dtos/save-pokemon-type.dto';
+import { SavePokemonWeatherDto } from '../../dtos/pokemon-dtos/save-pokemon-weather.dto';
 
 const readXlsxFile = require('read-excel-file/node');
 
@@ -10,31 +12,16 @@ const pokemonService = new PokemonsService();
 export class FileService {
   async saveFileContent(filePath: any, flag: string) {
     try {
+      /**Inicio da leitura do arquivo */
       let resultMessage;
       await readXlsxFile(filePath).then(async (rows: any) => {
-        rows.shift();
+        rows.shift(); //Pula cabeçalho
 
+        /**Loop da rows do arquivo */
         for (let i = 0; i < rows.length; i++) {
+          /**Procedimento tomando de acordo com a flag do arquivo */
           if (flag === 'POKEMON') {
             const pokemon = rows[i];
-
-            //Setando PokemonStatsDto
-            const pokemonStatsDto: SavePokemonStatsDto = {
-              attack: pokemon[14],
-              defense: pokemon[15],
-              stamina: pokemon[16],
-              total_stats: pokemon[13],
-            };
-
-            //Setando PokemonCpDto
-            const pokemonCpMax: SavePokemonCpDto = {
-              value: pokemon[28],
-            };
-            console.log('MAX', pokemon[28]);
-            const pokemonCpMin: SavePokemonCpDto = {
-              value: pokemon[29],
-            };
-            console.log('MIN', pokemon[29]);
 
             //Setando PokemonDto
             const pokemonDto: CreatePokemonDto = {
@@ -59,11 +46,46 @@ export class FileService {
               future_evolve: pokemon[27],
             };
 
+            //Setando PokemonStatsDto
+            const pokemonStatsDto: SavePokemonStatsDto = {
+              attack: pokemon[14],
+              defense: pokemon[15],
+              stamina: pokemon[16],
+              total_stats: pokemon[13],
+            };
+
+            //Setando PokemonCpDto
+            const pokemonCpMax: SavePokemonCpDto = {
+              value: pokemon[28],
+            };
+
+            const pokemonCpMin: SavePokemonCpDto = {
+              value: pokemon[29],
+            };
+
+            //Setanto PokemonType
+            const pokemonType: SavePokemonTypeDto = {
+              type: pokemon[9],
+            };
+            const pokemonSubType: SavePokemonTypeDto | null =
+              pokemon[10] !== null ? { type: pokemon[10] } : null;
+
+            //Setando PokemonWeather
+            const pokemonWeather: SavePokemonWeatherDto = {
+              weather: pokemon[11],
+            };
+            const pokemonSubWeather: SavePokemonWeatherDto | null =
+              pokemon[12] !== null ? { weather: pokemon[12] } : null;
+
             const result = await pokemonService.createPokemons(
               pokemonDto,
               pokemonStatsDto,
               pokemonCpMax,
               pokemonCpMin,
+              pokemonType,
+              pokemonWeather,
+              pokemonSubType,
+              pokemonSubWeather,
             );
 
             if (result instanceof Error) {

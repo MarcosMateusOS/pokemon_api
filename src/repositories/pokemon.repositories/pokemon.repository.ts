@@ -11,13 +11,25 @@ export const PokemonRepository = AppDataSource.getRepository(Pokemon).extend({
 
   async search(getPokemon: GetPokemon) {
     try {
-      const { name, is_legendary, is_shiny } = getPokemon.filters;
-      const { type, skip, take } = getPokemon;
+      const {
+        name,
+        is_legendary,
+        is_shiny,
+        weather,
+        sub_weather,
+        type,
+        sub_type,
+      } = getPokemon.filters;
+      const { type_list, skip, take } = getPokemon;
 
       const queryPokemon = this.createQueryBuilder('pokemons')
         .leftJoinAndSelect('pokemons.stats', 'stats')
         .leftJoinAndSelect('pokemons.cp_max', 'cp_max')
-        .leftJoinAndSelect('pokemons.cp_min', 'cp_min');
+        .leftJoinAndSelect('pokemons.cp_min', 'cp_min')
+        .leftJoinAndSelect('pokemons.type', 'type')
+        .leftJoinAndSelect('pokemons.sub_type', 'sub_type')
+        .leftJoinAndSelect('pokemons.weather', 'weather')
+        .leftJoinAndSelect('pokemons.sub_weather', 'sub_weather');
 
       if (typeof name !== 'undefined' && name !== null) {
         queryPokemon.where('pokemons.name = :name', { name });
@@ -35,7 +47,32 @@ export const PokemonRepository = AppDataSource.getRepository(Pokemon).extend({
         });
       }
 
-      if (type === 'PAGINATION') {
+      if (typeof type !== 'undefined' && type !== null) {
+        console.log(type);
+        queryPokemon.where('pokemons.type = :type', {
+          type,
+        });
+      }
+
+      if (typeof sub_type !== 'undefined' && sub_type !== null) {
+        queryPokemon.where('pokemons.sub_type = :sub_type', {
+          sub_type,
+        });
+      }
+
+      if (typeof weather !== 'undefined' && weather !== null) {
+        queryPokemon.where('pokemons.weather = :weather', {
+          weather,
+        });
+      }
+
+      if (typeof sub_weather !== 'undefined' && sub_weather !== null) {
+        queryPokemon.where('pokemons.sub_weather = :sub_weather', {
+          sub_weather,
+        });
+      }
+
+      if (type_list === 'PAGINATION') {
         queryPokemon.skip(Number(skip)).take(Number(take));
       }
 

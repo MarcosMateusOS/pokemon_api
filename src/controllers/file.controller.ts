@@ -1,16 +1,12 @@
 import { Request, Response } from 'express';
-import { Body, Controller, Post, Route } from 'tsoa';
 import { FileService } from '../services/file/file.service';
 
 const fileService = new FileService();
 
-@Route('/upload')
-export class FileController extends Controller {
-  @Post()
-  async uploadFile(@Body() request: Request, response: Response) {
+export class FileController {
+  async uploadFile(request: Request, response: Response) {
     try {
-      console.log('LENDO ARQUIVO...');
-
+      /**Flag via request para tomada de decisão para armazenamento dos dados do arquivo */
       const { flag } = request.body;
 
       if (flag === null) {
@@ -18,9 +14,12 @@ export class FileController extends Controller {
           .status(400)
           .send('Flag obrigatória para a leitura do arquivo');
       }
+      /**Busca do path do arquivo */
       const pathFile: any = `./src/uploads/${request.file?.filename}`;
+
+      /**Chamada do service do arquivo */
       const result = await fileService.saveFileContent(pathFile, flag);
-      console.log(result);
+
       if (result.status === false) {
         return response.status(400).send(result.message);
       } else {

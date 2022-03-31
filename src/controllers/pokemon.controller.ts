@@ -5,24 +5,20 @@ import { PokemonsService } from '../services/pokemon/pokemons.service';
 const pokemonService = new PokemonsService();
 
 export class PokemonController {
-  // async findOneByname(request: Request, response: Response) {
-  //   try {
-  //     const { name } = request.query;
-  //     const pokemonFind = await pokemonService.findOneByName(name.toString());
-  //     if (pokemonFind === null) {
-  //       return response.status(404).send('Pokemon não encontrado');
-  //     }
-  //     return response.status(200).send(pokemonFind);
-  //   } catch (error) {
-  //     return response.status(500).send(error);
-  //   }
-  // }
   async searchPokemon(request: Request, response: Response) {
+    /**Metodode listagem de pokemon, com filtros e paginação */
     try {
-      const { name, id_family, is_legendary, is_shiny } = request.query;
+      const {
+        name,
+        id_family,
+        is_legendary,
+        is_shiny,
+        weather,
+        sub_weather,
+        type,
+        sub_type,
+      } = request.query;
 
-      //const { type_list, skip, take } = request.header;
-      console.log(request.headers['type-list']);
       const type_list = request.headers['type-list'] || 'LIST';
 
       let skip = null;
@@ -33,27 +29,29 @@ export class PokemonController {
       }
 
       const getPokemonDto: GetPokemon = {
-        filters: { name, id_family, is_legendary, is_shiny },
-        type: type_list,
+        filters: {
+          name,
+          id_family,
+          is_legendary,
+          is_shiny,
+          weather,
+          sub_weather,
+          type,
+          sub_type,
+        },
+        type_list: type_list,
         skip,
         take,
       };
       const result = await pokemonService.searchPokemons(getPokemonDto);
-      //console.log(result);
+
+      if (result.length === 0) {
+        return response.status(201).send('Nenhum dado foi encontrado');
+      }
+
       return response.status(200).send(result);
     } catch (error) {
       return response.status(500).send(error);
     }
   }
-  // async createPokemon(pokemonDto: CreatePokemonDto, response: Response) {
-  //   try {
-  //     const result = await pokemonService.createPokemons(pokemonDto);
-  //     if (result instanceof Error) {
-  //       return response.status(400).send({ error: result.message });
-  //     }
-  //     return response.status(200).send(result);
-  //   } catch (error) {
-  //     return response.status(500).send({ error: error.message });
-  //   }
-  // }
 }
